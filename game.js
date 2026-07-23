@@ -6,7 +6,7 @@ let gameState = "menu"; // 'menu', 'shop', 'playing', 'gameover'
 let score = 0; 
 let totalPassedObstacles = 0; 
 let currentLevel = 1; 
-let money = 500; // Test için başlangıç parası
+let money = 500; 
 
 // Oyuncu Seçimleri (Envanter)
 let currentSkin = "tekne"; 
@@ -19,32 +19,12 @@ let unlockedTrails = { yok: true, mavi: false, kirmizi: false, yesil: false, gok
 let boat = {
     x: 100,
     y: 250,
-    width: 45,
-    height: 30,
-    speed: 5
+    width: 30,
+    height: 18,
+    speed: 6
 };
 
-// --- GÖRSELLERİ TANITIYORUZ (Assets Klasöründen Çeker) ---
-const skinImages = {};
-
-function loadImages() {
-    const skinsToLoad = {
-        roket: "assets/roket.png",
-        araba: "assets/araba.png",
-        denizalti: "assets/denizalti.png",
-        balina: "assets/balina.png"
-    };
-
-    for (let key in skinsToLoad) {
-        skinImages[key] = new Image();
-        skinImages[key].src = skinsToLoad[key];
-    }
-}
-loadImages();
-
-// Arkadaki İzi Saklamak İçin Dizi
 let trailParticles = [];
-
 let obstacles = [];
 let obstacleSpeed = 3.5;
 let obstacleSpawnTimer = 0;
@@ -65,126 +45,19 @@ window.addEventListener("keyup", (e) => keys[e.key.toLowerCase()] = false);
 let movingUp = false;
 let movingDown = false;
 
-// Menü Geçişleri
+// Mobil / Cihaz Tespiti ve Hız Ayarı
+let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
+
 function startGameFromMenu() {
     document.getElementById("main-menu").style.display = "none";
-    document.getElementById("shop-screen").style.display = "none";
     document.getElementById("game-container").style.display = "block";
     resetGame();
-}
-
-function openShop() {
-    document.getElementById("main-menu").style.display = "none";
-    document.getElementById("shop-screen").style.display = "flex";
-    updateShopUI(); 
-}
-
-function closeShop() {
-    document.getElementById("shop-screen").style.display = "none";
-    document.getElementById("main-menu").style.display = "flex";
 }
 
 function returnToMainMenu() {
     gameState = "menu";
     document.getElementById("game-container").style.display = "none";
     document.getElementById("main-menu").style.display = "flex";
-}
-
-// Mağaza Arayüzünü Güncelleme
-function updateShopUI() {
-    document.getElementById("shop-gold").innerText = money;
-
-    const skins = [
-        { id: 'tekne', name: 'Tekne (Varsayılan)', price: 0 },
-        { id: 'roket', name: '🚀 Roket', price: 50 },
-        { id: 'araba', name: '🏎️ Araba', price: 80 },
-        { id: 'denizalti', name: '🛥️ Denizaltı', price: 120 },
-        { id: 'balina', name: '🐋 Balina', price: 200 }
-    ];
-
-    skins.forEach(s => {
-        let btn = document.getElementById(`btn-skin-${s.id}`);
-        if (btn) {
-            btn.className = "shop-item-btn";
-            if (currentSkin === s.id) {
-                btn.innerText = `${s.name} (Seçili)`;
-                btn.classList.add("active-item");
-            } else if (unlockedSkins[s.id]) {
-                btn.innerText = `${s.name} (Alındı)`;
-            } else {
-                btn.innerText = `${s.name} (${s.price} Altın)`;
-            }
-        }
-    });
-
-    const trails = [
-        { id: 'yok', name: 'İz Yok', price: 0 },
-        { id: 'mavi', name: '🔵 Mavi İz', price: 20 },
-        { id: 'kirmizi', name: '🔴 Kırmızı İz', price: 30 },
-        { id: 'yesil', name: '🟢 Yeşil İz', price: 40 },
-        { id: 'gokkusagi', name: '🌈 Gökkuşağı İzi', price: 150 }
-    ];
-
-    trails.forEach(t => {
-        let btn = document.getElementById(`btn-trail-${t.id}`);
-        if (btn) {
-            btn.className = "shop-item-btn";
-            if (currentTrail === t.id) {
-                btn.innerText = `${t.name} (Seçili)`;
-                btn.classList.add("active-item");
-            } else if (unlockedTrails[t.id]) {
-                btn.innerText = `${t.name} (Alındı)`;
-            } else {
-                btn.innerText = `${t.name} (${t.price} Altın)`;
-            }
-        }
-    });
-}
-
-function selectSkin(skinName) {
-    if (unlockedSkins[skinName]) {
-        currentSkin = skinName;
-        updateShopUI();
-    }
-}
-
-function buyOrSelectSkin(skinName, price) {
-    if (unlockedSkins[skinName]) {
-        currentSkin = skinName;
-    } else {
-        if (money >= price) {
-            money -= price;
-            unlockedSkins[skinName] = true;
-            currentSkin = skinName;
-            alert("Skin başarıyla satın alındı!");
-        } else {
-            alert("Yeterli altının yok!");
-        }
-    }
-    updateShopUI();
-}
-
-function selectTrail(trailName) {
-    if (unlockedTrails[trailName]) {
-        currentTrail = trailName;
-        updateShopUI();
-    }
-}
-
-function buyOrSelectTrail(trailName, price) {
-    if (unlockedTrails[trailName]) {
-        currentTrail = trailName;
-    } else {
-        if (money >= price) {
-            money -= price;
-            unlockedTrails[trailName] = true;
-            currentTrail = trailName;
-            alert("İz başarıyla satın alındı!");
-        } else {
-            alert("Yeterli altının yok!");
-        }
-    }
-    updateShopUI();
 }
 
 function updateUI() {
@@ -199,9 +72,18 @@ function resetGame() {
     coins = [];
     trailParticles = [];
     score = 0;
-    totalPassedObstacles = 0;
-    currentLevel = 1;
-    obstacleSpeed = 3.5;
+    
+    // Telefonda oynayanlar için direkt Seviye 6'dan (hızlı) başlatıyoruz!
+    if (isMobile) {
+        totalPassedObstacles = 50; // 5. seviyenin sonu / 6. seviyenin başı
+        currentLevel = 6;
+        obstacleSpeed = 6.5;
+    } else {
+        totalPassedObstacles = 0;
+        currentLevel = 1;
+        obstacleSpeed = 3.5;
+    }
+
     obstacleSpawnTimer = 0;
     gameState = "playing";
     
@@ -231,8 +113,22 @@ function respawn() {
     }
 }
 
+// Kontrol Yerini Değiştirme (Sağ / Sol Seçimi)
+function toggleControlSide(side) {
+    const controlsContainer = document.getElementById("mobile-controls");
+    if (!controlsContainer) return;
+    
+    if (side === 'left') {
+        controlsContainer.style.flexDirection = "row";
+        controlsContainer.style.justifyContent = "flex-start";
+    } else if (side === 'right') {
+        controlsContainer.style.flexDirection = "row-reverse";
+        controlsContainer.style.justifyContent = "flex-start";
+    }
+}
+
 function spawnObstacle() {
-    const gapSize = Math.max(120, 160 - (currentLevel * 5)); 
+    const gapSize = Math.max(100, 150 - (currentLevel * 4)); 
     const minHeight = 40;
     const maxHeight = canvas.height - gapSize - minHeight;
     const topHeight = Math.random() * (maxHeight - minHeight) + minHeight;
@@ -256,7 +152,9 @@ function spawnObstacle() {
 function update() {
     if (gameState !== "playing") return;
 
-    obstacleSpeed = 3.5 + ((currentLevel - 1) * 0.6) + (totalPassedObstacles * 0.01);
+    // Mobil cihazlarda kasma olmaması için performans optimizasyonu ve güncellenmiş hız formülü
+    let baseSpeed = isMobile ? 6.0 : 3.5;
+    obstacleSpeed = baseSpeed + ((currentLevel - 1) * 0.5) + (totalPassedObstacles * 0.01);
 
     if (keys["w"] || keys["arrowup"] || movingUp) boat.y -= boat.speed;
     if (keys["s"] || keys["arrowdown"] || movingDown) boat.y += boat.speed;
@@ -264,7 +162,6 @@ function update() {
     if (boat.y < boat.height / 2) boat.y = boat.height / 2;
     if (boat.y > canvas.height - boat.height / 2) boat.y = canvas.height - boat.height / 2;
 
-    // İz Parçacığı Oluşturma
     if (currentTrail !== "yok") {
         let trailColor = "#ffffff";
         if (currentTrail === "mavi") trailColor = "#00bcd4";
@@ -294,7 +191,7 @@ function update() {
     }
 
     obstacleSpawnTimer++;
-    let spawnLimit = Math.max(60, 90 - (currentLevel * 5));
+    let spawnLimit = Math.max(50, 80 - (currentLevel * 3));
     if (obstacleSpawnTimer > spawnLimit) {
         spawnObstacle();
         obstacleSpawnTimer = 0;
@@ -305,10 +202,10 @@ function update() {
         obs.x -= obstacleSpeed;
 
         if (
-            boat.x - boat.width/2 < obs.x + obs.width &&
-            boat.x + boat.width/2 > obs.x &&
-            boat.y - boat.height/2 < obs.y + obs.height &&
-            boat.y + boat.height/2 > obs.y
+            boat.x < obs.x + obs.width &&
+            boat.x + boat.width > obs.x &&
+            boat.y < obs.y + obs.height &&
+            boat.y + boat.height > obs.y
         ) {
             die();
         }
@@ -345,7 +242,7 @@ function draw() {
     if (gameState === "menu") return;
 
     let themeKey = Math.min(currentLevel, 5);
-    let currentTheme = levelThemes[themeKey];
+    let currentTheme = levelThemes[themeKey] || levelThemes[5];
 
     ctx.fillStyle = currentTheme.bg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -381,19 +278,52 @@ function draw() {
         }
     });
 
-    // --- GERÇEK GÖRSELLERİN ÇİZİMİ (DRAW IMAGE) ---
     ctx.save();
     ctx.translate(boat.x, boat.y);
 
     if (currentSkin === "tekne") {
         ctx.fillStyle = "#ff5722";
         ctx.fillRect(-boat.width / 2, -boat.height / 2, boat.width, boat.height);
-    } else {
-        // Eğer roket, araba, denizaltı veya balina seçildiyse ilgili PNG resmi çizilir
-        let img = skinImages[currentSkin];
-        if (img && img.complete) {
-            ctx.drawImage(img, -boat.width, -boat.height / 1.5, boat.width * 2, boat.height * 1.5);
-        }
+    } else if (currentSkin === "roket") {
+        ctx.fillStyle = "#e53935";
+        ctx.beginPath();
+        ctx.moveTo(20, 0);
+        ctx.lineTo(-15, -12);
+        ctx.lineTo(-10, 0);
+        ctx.lineTo(-15, 12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = "#ffeb3b";
+        ctx.fillRect(-22, -4, 6, 8);
+    } else if (currentSkin === "araba") {
+        ctx.fillStyle = "#1e88e5";
+        ctx.fillRect(-18, -10, 36, 20);
+        ctx.fillStyle = "#212121";
+        ctx.fillRect(-12, -13, 8, 4);
+        ctx.fillRect(4, -13, 8, 4);
+        ctx.fillRect(-12, 9, 8, 4);
+        ctx.fillRect(4, 9, 8, 4);
+    } else if (currentSkin === "denizalti") {
+        ctx.fillStyle = "#00acc1";
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 20, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#b2ebf2";
+        ctx.beginPath();
+        ctx.arc(0, -2, 4, 0, Math.PI * 2);
+        ctx.fill();
+    } else if (currentSkin === "balina") {
+        ctx.fillStyle = "#5c6bc0";
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 22, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(-18, 0);
+        ctx.lineTo(-28, -10);
+        ctx.lineTo(-25, 0);
+        ctx.lineTo(-28, 10);
+        ctx.closePath();
+        ctx.fill();
     }
 
     ctx.restore();
