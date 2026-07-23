@@ -202,15 +202,10 @@ function resetGame() {
     trailParticles = [];
     score = 0;
     
-    if (isMobile || isPortrait) {
-        totalPassedObstacles = 30; 
-        currentLevel = 4;
-        obstacleSpeed = 5.8;
-    } else {
-        totalPassedObstacles = 0;
-        currentLevel = 1;
-        obstacleSpeed = 4.0;
-    }
+    // Artık mobilde de bilgisayarda olduğu gibi Seviye 1'den ve normal hızda başlar
+    totalPassedObstacles = 0;
+    currentLevel = 1;
+    obstacleSpeed = 4.0;
 
     obstacleSpawnTimer = 0;
     gameState = "playing";
