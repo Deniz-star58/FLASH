@@ -43,8 +43,13 @@ let movingUp = false;
 let movingDown = false;
 
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
+let isPortrait = window.innerHeight > window.innerWidth;
 
-// Emniyet: Parmak ekrandan çekildiğinde hareketin takılı kalmasını önler
+window.addEventListener("resize", () => {
+    isPortrait = window.innerHeight > window.innerWidth;
+    resizeCanvas();
+});
+
 window.addEventListener("touchend", () => {
     movingUp = false;
     movingDown = false;
@@ -59,11 +64,11 @@ function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     } else {
-        canvas.width = 900;
-        canvas.height = 500;
+        // Normal modda daha küçük ve kompakt ekran boyutu
+        canvas.width = 800;
+        canvas.height = 450;
     }
 }
-window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 function toggleFullScreen() {
@@ -109,10 +114,11 @@ function resetGame() {
     trailParticles = [];
     score = 0;
     
-    if (isMobile) {
-        totalPassedObstacles = 40; 
-        currentLevel = 5;
-        obstacleSpeed = 6.5;
+    // Dikey modda veya mobilde oynanıyorsa oyun biraz daha hızlı ve tempolu başlar
+    if (isMobile || isPortrait) {
+        totalPassedObstacles = 30; 
+        currentLevel = 4;
+        obstacleSpeed = 5.8;
     } else {
         totalPassedObstacles = 0;
         currentLevel = 1;
@@ -122,7 +128,7 @@ function resetGame() {
     obstacleSpawnTimer = 0;
     gameState = "playing";
     
-    if (isMobile) {
+    if (isMobile || isPortrait) {
         document.getElementById("mobile-controls").style.display = "flex";
     }
     document.getElementById("gameover-screen").style.display = "none";
@@ -143,7 +149,7 @@ function respawn() {
         coins = [];
         gameState = "playing";
         
-        if (isMobile) {
+        if (isMobile || isPortrait) {
             document.getElementById("mobile-controls").style.display = "flex";
         }
         document.getElementById("gameover-screen").style.display = "none";
@@ -177,7 +183,7 @@ function spawnObstacle() {
 function update() {
     if (gameState !== "playing") return;
 
-    let baseSpeed = isMobile ? 5.5 : 3.8;
+    let baseSpeed = (isMobile || isPortrait) ? 5.2 : 3.8;
     obstacleSpeed = baseSpeed + ((currentLevel - 1) * 0.6) + (totalPassedObstacles * 0.015);
 
     if (keys["w"] || keys["arrowup"] || movingUp) boat.y -= boat.speed;

@@ -32,7 +32,7 @@
             <div id="status-info">Durum: <span id="status-val">Sv. 1 (0/10)</span></div>
         </div>
 
-        <!-- Mobil Kontroller (Sağda Alt Alta Bas-Tut Tuşlar) -->
+        <!-- Mobil Kontroller -->
         <div id="mobile-controls">
             <button class="control-btn" id="btn-up">▲</button>
             <button class="control-btn" id="btn-down">▼</button>
@@ -44,6 +44,7 @@
             <p>Skorun: <span id="final-score">0</span></p>
             <button class="gameover-btn" onclick="respawn()">15 Altına Yeniden Doğ</button>
             <button class="gameover-btn" onclick="resetGame()">Baştan Başla</button>
+            <button class="gameover-btn" onclick="returnToMainMenu()">🏠 Ana Menüye Dön</button>
         </div>
     </div>
 
@@ -55,7 +56,6 @@
 
     <script src="game.js"></script>
     
-    <!-- Dokunmatik Kontrol Dinleyicileri -->
     <script>
         function openShop() {
             document.getElementById("main-menu").style.display = "none";
@@ -71,7 +71,6 @@
         const btnDown = document.getElementById("btn-down");
 
         if (btnUp && btnDown) {
-            // Yukarı Tuşu Dokunma ve Mouse Olayları
             btnUp.addEventListener("touchstart", (e) => { e.preventDefault(); movingUp = true; }, { passive: false });
             btnUp.addEventListener("touchend", (e) => { e.preventDefault(); movingUp = false; }, { passive: false });
             btnUp.addEventListener("touchcancel", (e) => { e.preventDefault(); movingUp = false; }, { passive: false });
@@ -79,7 +78,6 @@
             btnUp.addEventListener("mouseup", () => { movingUp = false; });
             btnUp.addEventListener("mouseleave", () => { movingUp = false; });
 
-            // Aşağı Tuşu Dokunma ve Mouse Olayları
             btnDown.addEventListener("touchstart", (e) => { e.preventDefault(); movingDown = true; }, { passive: false });
             btnDown.addEventListener("touchend", (e) => { e.preventDefault(); movingDown = false; }, { passive: false });
             btnDown.addEventListener("touchcancel", (e) => { e.preventDefault(); movingDown = false; }, { passive: false });
