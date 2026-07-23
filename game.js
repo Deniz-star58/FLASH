@@ -23,7 +23,7 @@ let boat = {
 
 let trailParticles = [];
 let obstacles = [];
-let obstacleSpeed = 4.0;
+let obstacleSpeed = 4.5;
 let obstacleSpawnTimer = 0;
 let coins = [];
 
@@ -108,6 +108,7 @@ function openShop() {
         let shopMoney = document.getElementById("shop-money");
         if (shopMoney) shopMoney.innerText = money;
 
+        // Skin durumlarını güncelle
         for (let skin in unlockedSkins) {
             let btn = document.getElementById(`btn-skin-${skin}`);
             if (btn) {
@@ -125,6 +126,7 @@ function openShop() {
             }
         }
 
+        // İz durumlarını güncelle
         for (let trail in unlockedTrails) {
             let btn = document.getElementById(`btn-trail-${trail}`);
             if (btn) {
@@ -153,7 +155,7 @@ function closeShop() {
 function selectSkin(skinName) {
     if (unlockedSkins[skinName]) {
         currentSkin = skinName;
-        openShop();
+        openShop(); // Arayüzü anında güncelle
     } else {
         let costs = { roket: 50, araba: 100, denizalti: 150, balina: 200 };
         let cost = costs[skinName];
@@ -161,7 +163,7 @@ function selectSkin(skinName) {
             money -= cost;
             unlockedSkins[skinName] = true;
             currentSkin = skinName;
-            openShop();
+            openShop(); // Arayüzü anında güncelle
         } else {
             alert("Yeterli altının yok!");
         }
@@ -171,7 +173,7 @@ function selectSkin(skinName) {
 function selectTrail(trailName) {
     if (unlockedTrails[trailName]) {
         currentTrail = trailName;
-        openShop();
+        openShop(); // Arayüzü anında güncelle
     } else {
         let costs = { mavi: 30, kirmizi: 60, yesil: 90, gokkusagi: 150 };
         let cost = costs[trailName];
@@ -179,7 +181,7 @@ function selectTrail(trailName) {
             money -= cost;
             unlockedTrails[trailName] = true;
             currentTrail = trailName;
-            openShop();
+            openShop(); // Arayüzü anında güncelle
         } else {
             alert("Yeterli altının yok!");
         }
@@ -200,7 +202,7 @@ function resetGame() {
     trailParticles = [];
     score = 0;
     
-    // Kesinlikle Seviye 1'den ve normal hızda başlatıyoruz
+    // Artık mobilde de bilgisayarda olduğu gibi Seviye 1'den ve normal hızda başlar
     totalPassedObstacles = 0;
     currentLevel = 1;
     obstacleSpeed = 4.0;
@@ -263,7 +265,7 @@ function spawnObstacle() {
 function update() {
     if (gameState !== "playing") return;
 
-    let baseSpeed = 3.8;
+    let baseSpeed = (isMobile || isPortrait) ? 5.2 : 3.8;
     obstacleSpeed = baseSpeed + ((currentLevel - 1) * 0.6) + (totalPassedObstacles * 0.015);
 
     if (keys["w"] || keys["arrowup"] || movingUp) boat.y -= boat.speed;
