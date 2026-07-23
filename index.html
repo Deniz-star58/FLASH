@@ -32,13 +32,13 @@
             <div id="status-info">Durum: <span id="status-val">Sv. 1 (0/10)</span></div>
         </div>
 
-        <!-- Mobil Kontroller (Sağ Tarafta Alt Alta Oklar) -->
+        <!-- Mobil Kontroller (Sağda Alt Alta Bas-Tut Tuşlar) -->
         <div id="mobile-controls">
             <button class="control-btn" id="btn-up">▲</button>
             <button class="control-btn" id="btn-down">▼</button>
         </div>
 
-        <!-- Oyun Bitti (Game Over) Ekranı -->
+        <!-- Oyun Bitti Ekranı -->
         <div id="gameover-screen">
             <h2>ÇARPTIN!</h2>
             <p>Skorun: <span id="final-score">0</span></p>
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <!-- MAĞAZA EKRANI (Başlangıçta gizli) -->
+    <!-- MAĞAZA EKRANI -->
     <div id="shop-screen" style="display: none;">
         <h2>MAĞAZA</h2>
         <button class="menu-btn" onclick="closeShop()">Geri Dön</button>
@@ -55,9 +55,8 @@
 
     <script src="game.js"></script>
     
-    <!-- Maç ve Mobil Tuş Kontrolleri -->
+    <!-- Dokunmatik Kontrol Dinleyicileri -->
     <script>
-        // Mağaza Fonksiyonları
         function openShop() {
             document.getElementById("main-menu").style.display = "none";
             document.getElementById("shop-screen").style.display = "flex";
@@ -68,20 +67,25 @@
             document.getElementById("main-menu").style.display = "flex";
         }
 
-        // Mobil Dokunmatik Tuşlar
         const btnUp = document.getElementById("btn-up");
         const btnDown = document.getElementById("btn-down");
 
-        if(btnUp && btnDown) {
-            btnUp.addEventListener("touchstart", (e) => { e.preventDefault(); movingUp = true; });
-            btnUp.addEventListener("touchend", (e) => { e.preventDefault(); movingUp = false; });
+        if (btnUp && btnDown) {
+            // Yukarı Tuşu Dokunma ve Mouse Olayları
+            btnUp.addEventListener("touchstart", (e) => { e.preventDefault(); movingUp = true; }, { passive: false });
+            btnUp.addEventListener("touchend", (e) => { e.preventDefault(); movingUp = false; }, { passive: false });
+            btnUp.addEventListener("touchcancel", (e) => { e.preventDefault(); movingUp = false; }, { passive: false });
             btnUp.addEventListener("mousedown", () => { movingUp = true; });
             btnUp.addEventListener("mouseup", () => { movingUp = false; });
+            btnUp.addEventListener("mouseleave", () => { movingUp = false; });
 
-            btnDown.addEventListener("touchstart", (e) => { e.preventDefault(); movingDown = true; });
-            btnDown.addEventListener("touchend", (e) => { e.preventDefault(); movingDown = false; });
+            // Aşağı Tuşu Dokunma ve Mouse Olayları
+            btnDown.addEventListener("touchstart", (e) => { e.preventDefault(); movingDown = true; }, { passive: false });
+            btnDown.addEventListener("touchend", (e) => { e.preventDefault(); movingDown = false; }, { passive: false });
+            btnDown.addEventListener("touchcancel", (e) => { e.preventDefault(); movingDown = false; }, { passive: false });
             btnDown.addEventListener("mousedown", () => { movingDown = true; });
             btnDown.addEventListener("mouseup", () => { movingDown = false; });
+            btnDown.addEventListener("mouseleave", () => { movingDown = false; });
         }
     </script>
 </body>

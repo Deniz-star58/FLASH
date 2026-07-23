@@ -3,6 +3,8 @@
     margin: 0;
     padding: 0;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
 body {
@@ -16,7 +18,6 @@ body {
     overflow: hidden;
 }
 
-/* Ana Menü Ekranı */
 #main-menu {
     display: flex;
     flex-direction: column;
@@ -85,7 +86,6 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Oyun Konteynerı - Dar kalma sorunu düzeltildi */
 #game-container {
     display: none;
     position: relative;
@@ -116,7 +116,6 @@ canvas {
     background: #0b1d3a;
 }
 
-/* Üst Bilgi Paneli */
 #ui-panel {
     position: absolute;
     top: 15px;
@@ -128,6 +127,7 @@ canvas {
     font-size: 16px;
     font-weight: bold;
     pointer-events: auto;
+    z-index: 10;
 }
 
 #ui-panel > div, #ui-panel > button {
@@ -139,7 +139,7 @@ canvas {
     cursor: pointer;
 }
 
-/* Mobil Kontroller: Sağ Tarafta Alt Alta (Ok Şeklinde) */
+/* Mobil Kontroller: Sağda Alt Alta, Tıklanabilirliği Kesin Garantili */
 #mobile-controls {
     position: absolute;
     right: 25px;
@@ -147,16 +147,17 @@ canvas {
     display: none;
     flex-direction: column;
     gap: 12px;
-    z-index: 100;
+    z-index: 9999;
+    pointer-events: auto;
 }
 
 .control-btn {
     width: 75px;
-    height: 60px;
-    background: rgba(0, 188, 212, 0.3);
+    height: 65px;
+    background: rgba(0, 188, 212, 0.4);
     border: 2px solid #00bcd4;
     color: white;
-    font-size: 26px;
+    font-size: 28px;
     font-weight: bold;
     border-radius: 14px;
     display: flex;
@@ -164,15 +165,16 @@ canvas {
     align-items: center;
     cursor: pointer;
     backdrop-filter: blur(5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+    touch-action: none;
 }
 
 .control-btn:active {
-    background: rgba(0, 188, 212, 0.7);
+    background: rgba(0, 188, 212, 0.8);
     transform: scale(0.95);
 }
 
-/* Oyun Bitti Ekranı */
 #gameover-screen {
     display: none;
     position: absolute;
@@ -185,6 +187,7 @@ canvas {
     text-align: center;
     border: 2px solid #ff5722;
     box-shadow: 0 0 35px rgba(255, 87, 34, 0.5);
+    z-index: 20;
 }
 
 .gameover-btn {
@@ -199,4 +202,18 @@ canvas {
     margin: 8px 0;
     width: 100%;
     text-transform: uppercase;
+}
+
+#shop-screen {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #1a2a40 0%, #0b0f19 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 50;
 }

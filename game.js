@@ -1,18 +1,15 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// Oyun Durumu
-let gameState = "menu"; // 'menu', 'shop', 'playing', 'gameover'
+let gameState = "menu"; 
 let score = 0; 
 let totalPassedObstacles = 0; 
 let currentLevel = 1; 
 let money = 500; 
 
-// Oyuncu Seçimleri (Envanter)
 let currentSkin = "tekne"; 
 let currentTrail = "yok"; 
 
-// Satın Alınanlar
 let unlockedSkins = { tekne: true, roket: false, araba: false, denizalti: false, balina: false };
 let unlockedTrails = { yok: true, mavi: false, kirmizi: false, yesil: false, gokkusagi: false };
 
@@ -45,10 +42,9 @@ window.addEventListener("keyup", (e) => keys[e.key.toLowerCase()] = false);
 let movingUp = false;
 let movingDown = false;
 
-// Mobil / Cihaz Tespiti
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
 
-// Emniyet: Telefondan parmak tamamen kaldırıldığında hareketin takılı kalmasını önler
+// Emniyet: Parmak ekrandan çekildiğinde hareketin takılı kalmasını önler
 window.addEventListener("touchend", () => {
     movingUp = false;
     movingDown = false;
@@ -58,7 +54,6 @@ window.addEventListener("touchcancel", () => {
     movingDown = false;
 });
 
-// Canvas Boyutunu Ayarla
 function resizeCanvas() {
     if (document.fullscreenElement) {
         canvas.width = window.innerWidth;
@@ -71,7 +66,6 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-// Tam Ekran Yapma Fonksiyonu
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().then(() => {
@@ -186,7 +180,6 @@ function update() {
     let baseSpeed = isMobile ? 5.5 : 3.8;
     obstacleSpeed = baseSpeed + ((currentLevel - 1) * 0.6) + (totalPassedObstacles * 0.015);
 
-    // Hareket Kontrolü (Klavye + Mobil Tuşlar Bas-Tut)
     if (keys["w"] || keys["arrowup"] || movingUp) boat.y -= boat.speed;
     if (keys["s"] || keys["arrowdown"] || movingDown) boat.y += boat.speed;
 
