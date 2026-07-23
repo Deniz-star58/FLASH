@@ -21,12 +21,12 @@ let boat = {
     y: 250,
     width: 30,
     height: 18,
-    speed: 6
+    speed: 7
 };
 
 let trailParticles = [];
 let obstacles = [];
-let obstacleSpeed = 3.5;
+let obstacleSpeed = 4.5;
 let obstacleSpawnTimer = 0;
 let coins = [];
 
@@ -45,8 +45,21 @@ window.addEventListener("keyup", (e) => keys[e.key.toLowerCase()] = false);
 let movingUp = false;
 let movingDown = false;
 
-// Mobil / Cihaz Tespiti ve Hız Ayarı
+// Mobil / Cihaz Tespiti
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
+
+// Tam Ekran Yapma Fonksiyonu (Tarayıcı çubuklarını gizler)
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.log("Tam ekran hatası: ", err.message);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
 
 function startGameFromMenu() {
     document.getElementById("main-menu").style.display = "none";
@@ -73,15 +86,15 @@ function resetGame() {
     trailParticles = [];
     score = 0;
     
-    // Telefonda oynayanlar için direkt Seviye 6'dan (hızlı) başlatıyoruz!
+    // Mobilde oyunun hızlı akması için temposunu yükseltiyoruz
     if (isMobile) {
-        totalPassedObstacles = 50; // 5. seviyenin sonu / 6. seviyenin başı
-        currentLevel = 6;
+        totalPassedObstacles = 40; 
+        currentLevel = 5;
         obstacleSpeed = 6.5;
     } else {
         totalPassedObstacles = 0;
         currentLevel = 1;
-        obstacleSpeed = 3.5;
+        obstacleSpeed = 4.5;
     }
 
     obstacleSpawnTimer = 0;
@@ -128,7 +141,7 @@ function toggleControlSide(side) {
 }
 
 function spawnObstacle() {
-    const gapSize = Math.max(100, 150 - (currentLevel * 4)); 
+    const gapSize = Math.max(110, 150 - (currentLevel * 4)); 
     const minHeight = 40;
     const maxHeight = canvas.height - gapSize - minHeight;
     const topHeight = Math.random() * (maxHeight - minHeight) + minHeight;
@@ -152,9 +165,9 @@ function spawnObstacle() {
 function update() {
     if (gameState !== "playing") return;
 
-    // Mobil cihazlarda kasma olmaması için performans optimizasyonu ve güncellenmiş hız formülü
-    let baseSpeed = isMobile ? 6.0 : 3.5;
-    obstacleSpeed = baseSpeed + ((currentLevel - 1) * 0.5) + (totalPassedObstacles * 0.01);
+    // Mobil cihazlar için hızlandırılmış formül
+    let baseSpeed = isMobile ? 5.5 : 4.0;
+    obstacleSpeed = baseSpeed + ((currentLevel - 1) * 0.7) + (totalPassedObstacles * 0.015);
 
     if (keys["w"] || keys["arrowup"] || movingUp) boat.y -= boat.speed;
     if (keys["s"] || keys["arrowdown"] || movingDown) boat.y += boat.speed;
@@ -191,7 +204,7 @@ function update() {
     }
 
     obstacleSpawnTimer++;
-    let spawnLimit = Math.max(50, 80 - (currentLevel * 3));
+    let spawnLimit = Math.max(45, 75 - (currentLevel * 3));
     if (obstacleSpawnTimer > spawnLimit) {
         spawnObstacle();
         obstacleSpawnTimer = 0;
@@ -265,7 +278,7 @@ function draw() {
     ctx.fillStyle = currentTheme.wall;
     obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.width, obs.height));
 
-    coins.forEach(c => {
+    coins.call = coins.forEach(c => {
         if (!c.collected) {
             ctx.beginPath();
             ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
