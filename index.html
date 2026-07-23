@@ -10,13 +10,16 @@
 
     <!-- ANA MENÜ EKRANI -->
     <div id="main-menu">
-        <h1 id="rainbow-title">FLASH</h1>
-        <p class="creator-tag">Geliştirici: Deniz Akpınar</p>
-        <div class="menu-btn-group">
-            <button onclick="startGameFromMenu()" class="menu-main-btn">OYUNA GİR</button>
-            <button onclick="openShop()" class="menu-shop-btn">🛒 MAĞAZA / SKİN & İZ</button>
-        </div>
+    <h1>FLASH</h1>
+    <p>Geliştirici: Deniz Akpınar</p>
+    
+    <!-- Butonları alt alta tutacak özel kutu -->
+    <div class="menu-container">
+        <button class="menu-btn" onclick="startGameFromMenu()">OYUNA GİR</button>
+        <button class="menu-btn" onclick="openShop()">🛒 MAĞAZA / SKİN & İZ</button>
+        <button class="fullscreen-btn" onclick="toggleFullScreen()">🖥️ Tam Ekran Oyna</button>
     </div>
+</div>
 
     <!-- MAĞAZA / KARAKTER ÖZELLEŞTİRME EKRANI -->
     <div id="shop-screen" style="display: none;">

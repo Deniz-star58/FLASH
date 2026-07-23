@@ -48,15 +48,33 @@ let movingDown = false;
 // Mobil / Cihaz Tespiti
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
 
-// Tam Ekran Yapma Fonksiyonu (Tarayıcı çubuklarını gizler)
+// Canvas Boyutunu Ayarla (Tam ekranken ekranı kaplar, normaldeyken şık bir kutu olur)
+function resizeCanvas() {
+    if (document.fullscreenElement) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    } else {
+        // Bilgisayarda normal tarayıcıda açıldığında ideal oyun penceresi boyutu
+        canvas.width = 900;
+        canvas.height = 500;
+    }
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+// Tam Ekran Yapma Fonksiyonu
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
+        document.documentElement.requestFullscreen().then(() => {
+            setTimeout(resizeCanvas, 100);
+        }).catch(err => {
             console.log("Tam ekran hatası: ", err.message);
         });
     } else {
         if (document.exitFullscreen) {
-            document.exitFullscreen();
+            document.exitFullscreen().then(() => {
+                setTimeout(resizeCanvas, 100);
+            });
         }
     }
 }
@@ -64,6 +82,7 @@ function toggleFullScreen() {
 function startGameFromMenu() {
     document.getElementById("main-menu").style.display = "none";
     document.getElementById("game-container").style.display = "block";
+    resizeCanvas();
     resetGame();
 }
 
@@ -80,13 +99,14 @@ function updateUI() {
 }
 
 function resetGame() {
+    resizeCanvas();
     boat.y = canvas.height / 2;
     obstacles = [];
     coins = [];
     trailParticles = [];
     score = 0;
     
-    // Mobilde oyunun hızlı akması için temposunu yükseltiyoruz
+    // Mobilde hızlı başlar, masaüstünde normal Seviye 1'den başlar
     if (isMobile) {
         totalPassedObstacles = 40; 
         currentLevel = 5;
@@ -94,13 +114,15 @@ function resetGame() {
     } else {
         totalPassedObstacles = 0;
         currentLevel = 1;
-        obstacleSpeed = 4.5;
+        obstacleSpeed = 4.0;
     }
 
     obstacleSpawnTimer = 0;
     gameState = "playing";
     
-    document.getElementById("mobile-controls").style.display = "flex";
+    if (isMobile) {
+        document.getElementById("mobile-controls").style.display = "flex";
+    }
     document.getElementById("gameover-screen").style.display = "none";
 }
 
@@ -119,14 +141,15 @@ function respawn() {
         coins = [];
         gameState = "playing";
         
-        document.getElementById("mobile-controls").style.display = "flex";
+        if (isMobile) {
+            document.getElementById("mobile-controls").style.display = "flex";
+        }
         document.getElementById("gameover-screen").style.display = "none";
     } else {
         alert("Yeniden doğmak için en az 15 altının olmalı!");
     }
 }
 
-// Kontrol Yerini Değiştirme (Sağ / Sol Seçimi)
 function toggleControlSide(side) {
     const controlsContainer = document.getElementById("mobile-controls");
     if (!controlsContainer) return;
@@ -165,9 +188,8 @@ function spawnObstacle() {
 function update() {
     if (gameState !== "playing") return;
 
-    // Mobil cihazlar için hızlandırılmış formül
-    let baseSpeed = isMobile ? 5.5 : 4.0;
-    obstacleSpeed = baseSpeed + ((currentLevel - 1) * 0.7) + (totalPassedObstacles * 0.015);
+    let baseSpeed = isMobile ? 5.5 : 3.8;
+    obstacleSpeed = baseSpeed + ((currentLevel - 1) * 0.6) + (totalPassedObstacles * 0.015);
 
     if (keys["w"] || keys["arrowup"] || movingUp) boat.y -= boat.speed;
     if (keys["s"] || keys["arrowdown"] || movingDown) boat.y += boat.speed;
@@ -278,7 +300,7 @@ function draw() {
     ctx.fillStyle = currentTheme.wall;
     obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.width, obs.height));
 
-    coins.call = coins.forEach(c => {
+    coins.forEach(c => {
         if (!c.collected) {
             ctx.beginPath();
             ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
