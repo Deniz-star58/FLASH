@@ -3,99 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FLASH</title>
+    <title>FLASH - Uzay Macerası</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <!-- ANA MENÜ EKRANI -->
     <div id="main-menu">
-    <h1>FLASH</h1>
-    <p>Geliştirici: Deniz Akpınar</p>
-    
-    <!-- Butonları alt alta tutacak özel kutu -->
-    <div class="menu-container">
-        <button class="menu-btn" onclick="startGameFromMenu()">OYUNA GİR</button>
-        <button class="menu-btn" onclick="openShop()">🛒 MAĞAZA / SKİN & İZ</button>
-        <button class="fullscreen-btn" onclick="toggleFullScreen()">🖥️ Tam Ekran Oyna</button>
-    </div>
-</div>
-
-    <!-- MAĞAZA / KARAKTER ÖZELLEŞTİRME EKRANI -->
-    <div id="shop-screen" style="display: none;">
-        <h2>MAGAZA & ÖZELLEŞTİRME</h2>
-        <p>Toplam Altın: <strong id="shop-gold">0</strong></p>
+        <h1>FLASH</h1>
+        <p>Geliştirici: Deniz Akpınar</p>
         
-        <div class="shop-sections">
-            <div class="shop-box">
-                <h3>Skin Seçimi</h3>
-                <div id="skin-list">
-                    <button id="btn-skin-tekne" onclick="selectSkin('tekne')" class="shop-item-btn active-item">Tekne (Seçili)</button>
-                    <button id="btn-skin-roket" onclick="buyOrSelectSkin('roket', 50)" class="shop-item-btn">🚀 Roket (50 Altın)</button>
-                    <button id="btn-skin-araba" onclick="buyOrSelectSkin('araba', 80)" class="shop-item-btn">🏎️ Araba (80 Altın)</button>
-                    <button id="btn-skin-denizalti" onclick="buyOrSelectSkin('denizalti', 120)" class="shop-item-btn">🛥️ Denizaltı (120 Altın)</button>
-                    <button id="btn-skin-balina" onclick="buyOrSelectSkin('balina', 200)" class="shop-item-btn">🐋 Balina (200 Altın)</button>
-                </div>
-            </div>
-
-            <div class="shop-box">
-                <h3>Arka İz (Trail) Seçimi</h3>
-                <div id="trail-list">
-                    <button id="btn-trail-yok" onclick="selectTrail('yok')" class="shop-item-btn active-item">İz Yok (Seçili)</button>
-                    <button id="btn-trail-mavi" onclick="buyOrSelectTrail('mavi', 20)" class="shop-item-btn">🔵 Mavi İz (20 Altın)</button>
-                    <button id="btn-trail-kirmizi" onclick="buyOrSelectTrail('kirmizi', 30)" class="shop-item-btn">🔴 Kırmızı İz (30 Altın)</button>
-                    <button id="btn-trail-yesil" onclick="buyOrSelectTrail('yesil', 40)" class="shop-item-btn">🟢 Yeşil İz (40 Altın)</button>
-                    <button id="btn-trail-gokkusagi" onclick="buyOrSelectTrail('gokkusagi', 150)" class="shop-item-btn">🌈 Gökkuşağı İzi (150 Altın)</button>
-                </div>
-            </div>
+        <div class="menu-container">
+            <button class="menu-btn" onclick="startGameFromMenu()">OYUNA GİR</button>
+            <button class="menu-btn" onclick="openShop()">🛒 MAĞAZA / SKİN & İZ</button>
+            <button class="fullscreen-btn" onclick="toggleFullScreen()">🖥️ Tam Ekran Oyna</button>
         </div>
-        <br>
-        <button onclick="closeShop()" class="menu-main-btn">GERİ DÖN</button>
     </div>
 
-    <!-- OYUN ALANI -->
-    <div id="game-container" style="display: none;">
+    <!-- OYUN ALANI VE ARAYÜZ -->
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
         
-        <!-- Sol Üst Ana Menüye Dön Butonu & Üst Bilgi -->
+        <!-- Üst Bilgi Paneli -->
         <div id="ui-panel">
-            <button onclick="returnToMainMenu()" id="back-menu-btn">🏠 Ana Menü</button>
-            <span>Altın: <strong id="cargo-val">0</strong></span>
-            <span>Skor: <strong id="fuel-val">0</strong></span>
-            <span>Durum: <strong id="status-val">Seyirde</strong></span>
+            <button onclick="returnToMainMenu()">🏠 Ana Menü</button>
+            <div id="cargo-info">Altın: <span id="cargo-val">0</span></div>
+            <div id="fuel-info">Skor: <span id="fuel-val">0</span></div>
+            <div id="status-info">Durum: <span id="status-val">Sv. 1 (0/10)</span></div>
         </div>
 
-        <div class="canvas-wrapper">
-            <canvas id="gameCanvas" width="800" height="450"></canvas>
-            
-            <!-- Oyun Bitti Ekranı -->
-            <div id="gameover-screen" style="display: none;">
-                <h2>ÇARPTIN!</h2>
-                <p>Skorun: <span id="final-score">0</span></p>
-                <button onclick="respawn()" id="respawn-btn">15 Altına Yeniden Doğ</button>
-                <br><br>
-                <button onclick="resetGame()" id="restart-btn">Baştan Başla</button>
-            </div>
-        </div>
-
-        <!-- Mobil Dokunmatik Butonlar -->
+        <!-- Mobil Kontroller (Sağ Tarafta Alt Alta Oklar) -->
         <div id="mobile-controls">
-            <button id="btn-up" 
-                ontouchstart="movingUp=true; event.preventDefault();" 
-                ontouchend="movingUp=false;" 
-                onmousedown="movingUp=true;" 
-                onmouseup="movingUp=false;">⬆️ YUKARI</button>
-            <button id="btn-down" 
-                ontouchstart="movingDown=true; event.preventDefault();" 
-                ontouchend="movingDown=false;" 
-                onmousedown="movingDown=true;" 
-                onmouseup="movingDown=false;">⬇️ AŞAĞI</button>
+            <button class="control-btn" id="btn-up">▲</button>
+            <button class="control-btn" id="btn-down">▼</button>
         </div>
 
-        <div id="controls-hint">
-            Masaüstü: <strong>W, S</strong> | Mobil: Altındaki butonları kullan!
+        <!-- Oyun Bitti (Game Over) Ekranı -->
+        <div id="gameover-screen">
+            <h2>ÇARPTIN!</h2>
+            <p>Skorun: <span id="final-score">0</span></p>
+            <button class="gameover-btn" onclick="respawn()">15 Altına Yeniden Doğ</button>
+            <button class="gameover-btn" onclick="resetGame()">Baştan Başla</button>
         </div>
+    </div>
+
+    <!-- MAĞAZA EKRANI (Başlangıçta gizli) -->
+    <div id="shop-screen" style="display: none;">
+        <h2>MAĞAZA</h2>
+        <button class="menu-btn" onclick="closeShop()">Geri Dön</button>
     </div>
 
     <script src="game.js"></script>
+    
+    <!-- Maç ve Mobil Tuş Kontrolleri -->
+    <script>
+        // Mağaza Fonksiyonları
+        function openShop() {
+            document.getElementById("main-menu").style.display = "none";
+            document.getElementById("shop-screen").style.display = "flex";
+        }
+
+        function closeShop() {
+            document.getElementById("shop-screen").style.display = "none";
+            document.getElementById("main-menu").style.display = "flex";
+        }
+
+        // Mobil Dokunmatik Tuşlar
+        const btnUp = document.getElementById("btn-up");
+        const btnDown = document.getElementById("btn-down");
+
+        if(btnUp && btnDown) {
+            btnUp.addEventListener("touchstart", (e) => { e.preventDefault(); movingUp = true; });
+            btnUp.addEventListener("touchend", (e) => { e.preventDefault(); movingUp = false; });
+            btnUp.addEventListener("mousedown", () => { movingUp = true; });
+            btnUp.addEventListener("mouseup", () => { movingUp = false; });
+
+            btnDown.addEventListener("touchstart", (e) => { e.preventDefault(); movingDown = true; });
+            btnDown.addEventListener("touchend", (e) => { e.preventDefault(); movingDown = false; });
+            btnDown.addEventListener("mousedown", () => { movingDown = true; });
+            btnDown.addEventListener("mouseup", () => { movingDown = false; });
+        }
+    </script>
 </body>
 </html>

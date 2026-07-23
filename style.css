@@ -37,7 +37,6 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: colorShift 6s ease infinite;
-    text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
 }
 
 @keyframes colorShift {
@@ -74,11 +73,7 @@ body {
     box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3);
     transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 1px;
     width: 280px;
-    text-decoration: none;
-    backdrop-filter: blur(10px);
-    
     background: linear-gradient(270deg, #0288d1, #00acc1, #26c6da, #00bcd4);
     background-size: 800% 800%;
     animation: blueColorShift 8s ease infinite;
@@ -90,31 +85,25 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-.menu-btn:hover, .fullscreen-btn:hover {
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 8px 25px rgba(0, 229, 255, 0.5);
-    border-color: #ffffff;
-}
-
-.menu-btn:active, .fullscreen-btn:active {
-    transform: scale(0.97);
-}
-
+/* Oyun Konteynerı - Dar kalma sorunu düzeltildi */
 #game-container {
     display: none;
     position: relative;
-    width: 900px;
-    height: 500px;
+    width: 100vw;
+    height: 100vh;
+    max-width: 1200px;
+    max-height: 700px;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
     border: 2px solid rgba(0, 188, 212, 0.3);
 }
 
-/* Tarayıcıda tam ekrana geçildiğinde ekranı tamamen kaplasın */
 :fullscreen #game-container, :-webkit-full-screen #game-container {
     width: 100vw !important;
     height: 100vh !important;
+    max-width: none;
+    max-height: none;
     border: none;
     border-radius: 0;
     box-shadow: none;
@@ -127,7 +116,7 @@ canvas {
     background: #0b1d3a;
 }
 
-/* Arayüz Paneli (Üst Bilgi - Tıklanabilir Yapıldı ve Kutucuklar Eklendi) */
+/* Üst Bilgi Paneli */
 #ui-panel {
     position: absolute;
     top: 15px;
@@ -138,66 +127,49 @@ canvas {
     align-items: center;
     font-size: 16px;
     font-weight: bold;
-    pointer-events: auto; /* Tıklanabilirlik sorunu çözüldü */
+    pointer-events: auto;
 }
 
-/* Üst Paneldeki Her Bir Bilgi/Buton İçin Şık Kutucuk Tasarımı */
 #ui-panel > div, #ui-panel > button {
     background: rgba(15, 23, 42, 0.85);
     border: 2px solid rgba(0, 188, 212, 0.4);
     padding: 10px 18px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
     color: white;
     cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-#ui-panel > button:hover {
-    border-color: #00bcd4;
-    background: rgba(0, 188, 212, 0.2);
-    transform: scale(1.05);
-}
-
-/* Mobil Kontroller */
+/* Mobil Kontroller: Sağ Tarafta Alt Alta (Ok Şeklinde) */
 #mobile-controls {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
+    right: 25px;
+    bottom: 25px;
     display: none;
-    justify-content: space-between;
-    align-items: center;
-    pointer-events: none;
-}
-
-.control-group {
-    display: flex;
     flex-direction: column;
-    gap: 15px;
-    pointer-events: auto;
+    gap: 12px;
+    z-index: 100;
 }
 
 .control-btn {
-    width: 65px;
-    height: 65px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    width: 75px;
+    height: 60px;
+    background: rgba(0, 188, 212, 0.3);
+    border: 2px solid #00bcd4;
     color: white;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: bold;
-    border-radius: 50%;
+    border-radius: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     backdrop-filter: blur(5px);
-    transition: background 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .control-btn:active {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 188, 212, 0.7);
+    transform: scale(0.95);
 }
 
 /* Oyun Bitti Ekranı */
@@ -213,23 +185,8 @@ canvas {
     text-align: center;
     border: 2px solid #ff5722;
     box-shadow: 0 0 35px rgba(255, 87, 34, 0.5);
-    backdrop-filter: blur(10px);
 }
 
-#gameover-screen h2 {
-    color: #ff5722;
-    font-size: 32px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-
-#gameover-screen p {
-    font-size: 18px;
-    margin-bottom: 20px;
-    color: #cfd8dc;
-}
-
-/* Oyun Bitti Ekranındaki Butonlara Şık Kutucuk Tasarımı */
 .gameover-btn {
     background: linear-gradient(135deg, #ff5722, #ff9800);
     color: white;
@@ -241,29 +198,5 @@ canvas {
     cursor: pointer;
     margin: 8px 0;
     width: 100%;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 15px rgba(255, 87, 34, 0.3);
     text-transform: uppercase;
-}
-
-.gameover-btn:hover {
-    transform: scale(1.03);
-    background: linear-gradient(135deg, #ff7043, #ffa726);
-    border-color: #ffffff;
-}
-
-.gameover-btn:active {
-    transform: scale(0.97);
-}
-
-/* Mağaza Ekranı */
-#shop-screen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background: #0b0f19;
-    padding: 20px;
 }
