@@ -48,13 +48,22 @@ let movingDown = false;
 // Mobil / Cihaz Tespiti
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
 
-// Canvas Boyutunu Ayarla (Tam ekranken ekranı kaplar, normaldeyken şık bir kutu olur)
+// Emniyet: Telefondan parmak tamamen kaldırıldığında hareketin takılı kalmasını önler
+window.addEventListener("touchend", () => {
+    movingUp = false;
+    movingDown = false;
+});
+window.addEventListener("touchcancel", () => {
+    movingUp = false;
+    movingDown = false;
+});
+
+// Canvas Boyutunu Ayarla
 function resizeCanvas() {
     if (document.fullscreenElement) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     } else {
-        // Bilgisayarda normal tarayıcıda açıldığında ideal oyun penceresi boyutu
         canvas.width = 900;
         canvas.height = 500;
     }
@@ -106,7 +115,6 @@ function resetGame() {
     trailParticles = [];
     score = 0;
     
-    // Mobilde hızlı başlar, masaüstünde normal Seviye 1'den başlar
     if (isMobile) {
         totalPassedObstacles = 40; 
         currentLevel = 5;
@@ -150,19 +158,6 @@ function respawn() {
     }
 }
 
-function toggleControlSide(side) {
-    const controlsContainer = document.getElementById("mobile-controls");
-    if (!controlsContainer) return;
-    
-    if (side === 'left') {
-        controlsContainer.style.flexDirection = "row";
-        controlsContainer.style.justifyContent = "flex-start";
-    } else if (side === 'right') {
-        controlsContainer.style.flexDirection = "row-reverse";
-        controlsContainer.style.justifyContent = "flex-start";
-    }
-}
-
 function spawnObstacle() {
     const gapSize = Math.max(110, 150 - (currentLevel * 4)); 
     const minHeight = 40;
@@ -191,6 +186,7 @@ function update() {
     let baseSpeed = isMobile ? 5.5 : 3.8;
     obstacleSpeed = baseSpeed + ((currentLevel - 1) * 0.6) + (totalPassedObstacles * 0.015);
 
+    // Hareket Kontrolü (Klavye + Mobil Tuşlar Bas-Tut)
     if (keys["w"] || keys["arrowup"] || movingUp) boat.y -= boat.speed;
     if (keys["s"] || keys["arrowdown"] || movingDown) boat.y += boat.speed;
 
