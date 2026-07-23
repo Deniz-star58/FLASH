@@ -64,7 +64,6 @@ function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     } else {
-        // Normal modda daha küçük ve kompakt ekran boyutu
         canvas.width = 800;
         canvas.height = 450;
     }
@@ -97,7 +96,96 @@ function startGameFromMenu() {
 function returnToMainMenu() {
     gameState = "menu";
     document.getElementById("game-container").style.display = "none";
+    document.getElementById("gameover-screen").style.display = "none";
     document.getElementById("main-menu").style.display = "flex";
+}
+
+function openShop() {
+    document.getElementById("main-menu").style.display = "none";
+    let shopScreen = document.getElementById("shop-screen");
+    if (shopScreen) {
+        shopScreen.style.display = "flex";
+        let shopMoney = document.getElementById("shop-money");
+        if (shopMoney) shopMoney.innerText = money;
+
+        // Skin durumlarını güncelle
+        for (let skin in unlockedSkins) {
+            let btn = document.getElementById(`btn-skin-${skin}`);
+            if (btn) {
+                if (currentSkin === skin) {
+                    btn.innerText = skin.toUpperCase() + " (Seçili)";
+                    btn.style.borderColor = "#ffeb3b";
+                } else if (unlockedSkins[skin]) {
+                    btn.innerText = skin.toUpperCase() + " (Alındı)";
+                    btn.style.borderColor = "#4caf50";
+                } else {
+                    let costs = { roket: 50, araba: 100, denizalti: 150, balina: 200 };
+                    if (costs[skin]) btn.innerText = skin.toUpperCase() + ` (${costs[skin]} Altın)`;
+                    btn.style.borderColor = "#00bcd4";
+                }
+            }
+        }
+
+        // İz durumlarını güncelle
+        for (let trail in unlockedTrails) {
+            let btn = document.getElementById(`btn-trail-${trail}`);
+            if (btn) {
+                if (currentTrail === trail) {
+                    btn.innerText = trail.toUpperCase() + " (Seçili)";
+                    btn.style.borderColor = "#ffeb3b";
+                } else if (unlockedTrails[trail]) {
+                    btn.innerText = trail.toUpperCase() + " (Alındı)";
+                    btn.style.borderColor = "#4caf50";
+                } else {
+                    let costs = { mavi: 30, kirmizi: 60, yesil: 90, gokkusagi: 150 };
+                    if (costs[trail]) btn.innerText = trail.toUpperCase() + ` (${costs[trail]} Altın)`;
+                    btn.style.borderColor = "#00bcd4";
+                }
+            }
+        }
+    }
+}
+
+function closeShop() {
+    let shopScreen = document.getElementById("shop-screen");
+    if (shopScreen) shopScreen.style.display = "none";
+    document.getElementById("main-menu").style.display = "flex";
+}
+
+function selectSkin(skinName) {
+    if (unlockedSkins[skinName]) {
+        currentSkin = skinName;
+        openShop(); // Arayüzü anında güncelle
+    } else {
+        let costs = { roket: 50, araba: 100, denizalti: 150, balina: 200 };
+        let cost = costs[skinName];
+        if (money >= cost) {
+            money -= cost;
+            unlockedSkins[skinName] = true;
+            currentSkin = skinName;
+            openShop(); // Arayüzü anında güncelle
+        } else {
+            alert("Yeterli altının yok!");
+        }
+    }
+}
+
+function selectTrail(trailName) {
+    if (unlockedTrails[trailName]) {
+        currentTrail = trailName;
+        openShop(); // Arayüzü anında güncelle
+    } else {
+        let costs = { mavi: 30, kirmizi: 60, yesil: 90, gokkusagi: 150 };
+        let cost = costs[trailName];
+        if (money >= cost) {
+            money -= cost;
+            unlockedTrails[trailName] = true;
+            currentTrail = trailName;
+            openShop(); // Arayüzü anında güncelle
+        } else {
+            alert("Yeterli altının yok!");
+        }
+    }
 }
 
 function updateUI() {
@@ -114,7 +202,6 @@ function resetGame() {
     trailParticles = [];
     score = 0;
     
-    // Dikey modda veya mobilde oynanıyorsa oyun biraz daha hızlı ve tempolu başlar
     if (isMobile || isPortrait) {
         totalPassedObstacles = 30; 
         currentLevel = 4;

@@ -49,24 +49,38 @@
     </div>
 
     <!-- MAĞAZA EKRANI -->
-    <div id="shop-screen" style="display: none;">
-        <h2>MAĞAZA</h2>
-        <button class="menu-btn" onclick="closeShop()">Geri Dön</button>
+    <div id="shop-screen" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #1a2a40 0%, #0b0f19 100%); z-index: 100;">
+        <h2 style="color: #00bcd4; margin-bottom: 15px; font-size: 28px;">MAĞAZA - SKİN & İZ</h2>
+        <p style="color: #ffeb3b; margin-bottom: 20px; font-weight: bold; font-size: 18px;">Altın: <span id="shop-money">0</span></p>
+        
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; max-width: 800px; margin-bottom: 20px;">
+            <!-- Skin Seçimleri -->
+            <div style="background: rgba(15, 23, 42, 0.9); border: 2px solid #00bcd4; padding: 15px; border-radius: 14px; text-align: center; width: 220px;">
+                <h3 style="color: white; margin-bottom: 10px;">Araç Skinleri</h3>
+                <button class="menu-btn" id="btn-skin-tekne" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectSkin('tekne')">Tekne (Seçili)</button>
+                <button class="menu-btn" id="btn-skin-roket" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectSkin('roket')">Roket (50 Altın)</button>
+                <button class="menu-btn" id="btn-skin-araba" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectSkin('araba')">Araba (100 Altın)</button>
+                <button class="menu-btn" id="btn-skin-denizalti" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectSkin('denizalti')">Denizaltı (150 Altın)</button>
+                <button class="menu-btn" id="btn-skin-balina" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectSkin('balina')">Balina (200 Altın)</button>
+            </div>
+
+            <!-- İz Efektleri -->
+            <div style="background: rgba(15, 23, 42, 0.9); border: 2px solid #00bcd4; padding: 15px; border-radius: 14px; text-align: center; width: 220px;">
+                <h3 style="color: white; margin-bottom: 10px;">İz Efektleri</h3>
+                <button class="menu-btn" id="btn-trail-yok" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectTrail('yok')">İz Yok (Seçili)</button>
+                <button class="menu-btn" id="btn-trail-mavi" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectTrail('mavi')">Mavi İz (30 Altın)</button>
+                <button class="menu-btn" id="btn-trail-kirmizi" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectTrail('kirmizi')">Kırmızı İz (60 Altın)</button>
+                <button class="menu-btn" id="btn-trail-yesil" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectTrail('yesil')">Yeşil İz (90 Altın)</button>
+                <button class="menu-btn" id="btn-trail-gokkusagi" style="width: 100%; margin: 5px 0; font-size: 14px; padding: 10px;" onclick="selectTrail('gokkusagi')">Gökkuşağı (150 Altın)</button>
+            </div>
+        </div>
+
+        <button class="menu-btn" onclick="closeShop()">Ana Menüye Dön</button>
     </div>
 
     <script src="game.js"></script>
     
     <script>
-        function openShop() {
-            document.getElementById("main-menu").style.display = "none";
-            document.getElementById("shop-screen").style.display = "flex";
-        }
-
-        function closeShop() {
-            document.getElementById("shop-screen").style.display = "none";
-            document.getElementById("main-menu").style.display = "flex";
-        }
-
         const btnUp = document.getElementById("btn-up");
         const btnDown = document.getElementById("btn-down");
 
